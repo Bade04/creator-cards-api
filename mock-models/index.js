@@ -1,5 +1,6 @@
 const { Types } = require('mongoose');
 const { SchemaTypes } = require('@app-core/mongoose');
+const { ulid } = require('ulid');
 const mockingFactory = require('@app-core/mock-factory');
 const models = require('@app/models');
 const createStub = require('./create-stub');
@@ -12,7 +13,10 @@ function getDefaultValue(pathName, pathConfig) {
 
   let defaultValue;
 
-  if (Object.hasOwn(pathConfig, 'defaultValue')) {
+  // Special handling for _id field - always generate ULID
+  if (pathName === '_id') {
+    defaultValue = ulid();
+  } else if (Object.hasOwn(pathConfig, 'defaultValue')) {
     defaultValue = pathConfig.defaultValue;
   } else if (TS_REGEX.test(normPathName)) {
     defaultValue = Date.now();

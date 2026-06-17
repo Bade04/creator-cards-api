@@ -35,6 +35,15 @@ const ERROR_STATUS_CODE_MAPPING = {
   DUPLICATE_RECORD: 409,
   APPLICATION_ERROR: 500,
   RATE_LIMIT_ERROR: 429,
+
+  // Creator Card custom business rule error codes
+  SL02: 400, // Slug already taken
+  AC01: 400, // access_code required for private card
+  AC05: 400, // access_code must not be set on public card
+  NF01: 404, // Card not found
+  NF02: 404, // Card is a draft
+  AC03: 403, // Private card — access code required
+  AC04: 403, // Private card — wrong access code
 };
 
 module.exports = { ERROR_CODE, ERROR_STATUS_CODE_MAPPING };

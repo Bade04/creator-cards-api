@@ -6,6 +6,7 @@ const fs = require('fs');
 const { createServer } = require('@app-core/server');
 const { createConnection } = require('@app-core/mongoose');
 const { createQueue } = require('@app-core/queue');
+const { appLogger } = require('@app-core/logger');
 
 const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
 
@@ -24,6 +25,9 @@ const server = createServer({
 const ENDPOINT_CONFIGS = [
   {
     path: './endpoints/onboarding/',
+  },
+  {
+    path: './endpoints/creator-card/',
   },
 ];
 
@@ -79,6 +83,10 @@ function setupEndpointHandlers(basePath, options = {}) {
     }
 
     server.addHandler(handler);
+    appLogger.info(
+      { method: handler.method, path: handler.path, source: `${basePath}${file}` },
+      'registered-endpoint'
+    );
   });
 }
 
