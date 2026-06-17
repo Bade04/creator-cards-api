@@ -9,13 +9,6 @@ const { createQueue } = require('@app-core/queue');
 const { appLogger } = require('@app-core/logger');
 
 const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
-
-createConnection({
-  uri: process.env.MONGODB_URI,
-});
-
-createQueue();
-
 const server = createServer({
   port: process.env.PORT,
   JSONLimit: '150mb',
@@ -94,4 +87,20 @@ ENDPOINT_CONFIGS.forEach((config) => {
   setupEndpointHandlers(config.path, config.options);
 });
 
-server.startServer();
+async function startApplication() {
+  try {
+    await createConnection({
+      uri: process.env.MONGODB_URI,
+    });
+
+    appLogger.info('mongodb-connected');
+
+    createQueue();
+    server.startServer();
+  } catch (error) {
+    appLogger.error({ errorMessage: error.message, errorStack: error.stack }, 'mongodb-connection-failed');
+    process.exit(1);
+  }
+}
+
+startApplication();
