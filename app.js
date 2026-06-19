@@ -93,7 +93,7 @@ async function startApplication() {
       uri: process.env.MONGODB_URI,
     });
 
-    appLogger.info('mongodb-connected');
+    appLogger('mongodb-connected');
 
     createQueue();
     server.startServer();
