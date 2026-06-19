@@ -89,6 +89,10 @@ ENDPOINT_CONFIGS.forEach((config) => {
 
 async function startApplication() {
   try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI is required');
+    }
+
     await createConnection({
       uri: process.env.MONGODB_URI,
     });
