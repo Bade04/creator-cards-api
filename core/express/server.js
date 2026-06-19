@@ -82,6 +82,7 @@ function Server(serverConfig = {}) {
   handlerHelpers.http_statuses = expressEnums.HTTPStatusCode;
 
   const LOG_APP_REQUEST = parseInt(process.env.LOG_APP_REQUEST, 10);
+  const EXPOSE_ERROR_DETAILS = parseInt(process.env.EXPOSE_ERROR_DETAILS, 10);
 
   /**
    *
@@ -245,9 +246,14 @@ function Server(serverConfig = {}) {
         responseComponents.body.status = 'error';
         responseComponents.body.message = error.isApplicationError
           ? error.message
-          : 'Some error occured.';
+          : EXPOSE_ERROR_DETAILS
+            ? error.message
+            : 'Some error occured.';
         responseComponents.body.errors = error.details || undefined;
         responseComponents.body.data = error.context;
+        if (EXPOSE_ERROR_DETAILS && !error.isApplicationError) {
+          responseComponents.body.error_name = error.name;
+        }
         if (error.errorCode && error.errorCode !== 'ERR') {
           responseComponents.body.code = error.errorCode;
         }
